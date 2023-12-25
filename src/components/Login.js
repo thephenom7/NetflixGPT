@@ -1,23 +1,21 @@
-import React from "react";
-import Header from "./Header";
-import { useState, useRef } from "react";
-import { checkValidData } from "../utils/validate";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
-import { auth } from "../utils/firebase";
-import { useNavigate } from "react-router-dom";
-import { updateProfile } from "firebase/auth";
+import React, { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
+import { LOGO } from "../utils/constant";
+import { auth } from "../utils/firebase";
 import { addUser } from "../utils/userSlice";
+import { checkValidData } from "../utils/validate";
+import Header from "./Header";
 const Login = () => {
   const [isSignInForm, setSignInForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
   const email = useRef(null);
   const password = useRef(null);
   const fullName = useRef(null);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleToggle = () => {
     setSignInForm(!isSignInForm);
@@ -49,7 +47,6 @@ const Login = () => {
               // An error occurred
               // ...
             });
-          navigate("/browse");
           // ...
         })
         .catch((error) => {
@@ -67,7 +64,6 @@ const Login = () => {
         .then((userCredential) => {
           // Signed in
           const user = userCredential.user;
-          navigate("/browse");
 
           // ...
         })
@@ -82,10 +78,7 @@ const Login = () => {
     <div className="h-screen relative overflow-hidden">
       <Header />
       <div className="h-screen w-screen absolute">
-        <img
-          className="h-screen w-full"
-          src="https://assets.nflxext.com/ffe/siteui/vlv3/563192ea-ac0e-4906-a865-ba9899ffafad/6b2842d1-2339-4f08-84f6-148e9fcbe01b/IN-en-20231218-popsignuptwoweeks-perspective_alpha_website_large.jpg"
-        />
+        <img className="h-screen w-full" src={LOGO} />
       </div>
       <form className="absolute w-3/12 p-12 bg-black mx-auto my-36 right-0 left-0 text-white bg-opacity-80 text-sm">
         <h1 className="font-bold text-3xl py-4">
