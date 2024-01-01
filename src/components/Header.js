@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { changeLanguage } from "../utils/configSlice";
 import { AVATAR, NETFLIX_LABEL, SUPPORTED_LANGUAGES } from "../utils/constant";
 import { auth } from "../utils/firebase";
-import { toggleGptSearchView } from "../utils/gptSlice";
+import { addGptMovieResult, toggleGptSearchView } from "../utils/gptSlice";
 import { addUser, removeUser } from "../utils/userSlice";
 const Header = () => {
   const dispatch = useDispatch();
@@ -37,6 +37,7 @@ const Header = () => {
       });
   };
   const handleGptToggle = () => {
+    dispatch(addGptMovieResult({ movieNames: null, movieResults: null }));
     dispatch(toggleGptSearchView());
   };
   const handleLanguageChange = (e) => {
