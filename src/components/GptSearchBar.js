@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { API_OPTIONS } from "../utils/constant";
-import { addGptMovieResult } from "../utils/gptSlice";
+import { addGptMovieResult, setLoader } from "../utils/gptSlice";
 import lang from "../utils/languageConstants";
 import openai from "../utils/openai";
 
@@ -24,29 +24,35 @@ const GptSearchBar = () => {
   };
 
   const handleGptSearchClick = async () => {
+    dispatch(setLoader(true));
     const gptQuery =
       "Act as a Movie Recommendation system and suggest some movies for the query : " +
       searchText.current.value +
       ". only give me names of 5 movies, comma seperated like the example result given ahead. Example Result: Gadar, Sholay, Don, Golmaal, Koi Mil Gaya";
 
-    const gptResults = await openai.chat.completions.create({
-      messages: [{ role: "user", content: gptQuery }],
-      model: "gpt-3.5-turbo",
-    });
+    try {
+      const gptResults = await openai.chat.completions.create({
+        messages: [{ role: "user", content: gptQuery }],
+        model: "gpt-3.5-turbo",
+      });
 
-    if (!gptResults.choices) {
-      addGptMovieResult({ movieNames: "No Result Found" });
+      if (!gptResults.choices) {
+        addGptMovieResult({ movieNames: "error" });
+      }
+
+      const gptMovies = gptResults.choices?.[0]?.message?.content.split(",");
+      const promiseArray = gptMovies.map((movie) => searchMovieTMDB(movie));
+
+      const tmdbResults = await Promise.all(promiseArray);
+
+      dispatch(
+        addGptMovieResult({ movieNames: gptMovies, movieResults: tmdbResults })
+      );
+      dispatch(setLoader(false));
+    } catch (error) {
+      dispatch(setLoader(false));
+      dispatch(addGptMovieResult({ movieNames: "error" }));
     }
-
-    const gptMovies = gptResults.choices?.[0]?.message?.content.split(",");
-
-    const promiseArray = gptMovies.map((movie) => searchMovieTMDB(movie));
-
-    const tmdbResults = await Promise.all(promiseArray);
-
-    dispatch(
-      addGptMovieResult({ movieNames: gptMovies, movieResults: tmdbResults })
-    );
   };
 
   return (
