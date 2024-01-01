@@ -8,8 +8,7 @@ export const API_OPTIONS = {
   method: "GET",
   headers: {
     accept: "application/json",
-    Authorization:
-      "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5ZDUwY2YyYTYzOWE5NzY2ZDc0NGIwZWI5MjQ3MWQwZiIsInN1YiI6IjY1ODk0MGIwNjg4Y2QwNTdiMjg1Nzc5YyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.ULaX1Jb4QMl1c_ZVtTTHz5uppwBbkPFTHcNcwwyf574",
+    Authorization: "Bearer " + process.env.REACT_APP_TMDB_KEY,
   },
 };
 export const IMG_CDN = "https://image.tmdb.org/t/p/w500/";
@@ -18,3 +17,4 @@ export const SUPPORTED_LANGUAGES = [
   { identifier: "hindi", name: "Hindi" },
   { identifier: "spanish", name: "Spanish" },
 ];
+export const OPENAI_KEY = process.env.REACT_APP_OPENAI_KEY;
